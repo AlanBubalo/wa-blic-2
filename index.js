@@ -80,6 +80,28 @@ app.get("/getItemById", async (req, res) => {
     }
 });
 
+// UPDATE ITEM PRICE
+app.patch("/updateItemPrice", async (req, res) => {
+    let db = await connect("wa-blic-2");
+    let id = req.query["id"];
+    let newPrice = req.body["newPrice"];
+    let query = { _id: mongo.ObjectId(id) };
+    let item = await db
+        .collection("collection")
+        .updateOne(query, { $set: { price: parseFloat(newPrice) } });
+    if (item) {
+        res.json({
+            status: "OK",
+            message: `Item ${id} updated with new price ${newPrice}`,
+        });
+    } else {
+        res.json({
+            status: "Failed",
+            message: "Something went wrong",
+        });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
 });
